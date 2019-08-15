@@ -30,7 +30,7 @@ while true loop
 		end if;
 	end loop;
     
-	echo select cur_writes-prev_writes as 'writes', cur_reads-prev_reads as 'reads', concat('per ',ps,' second(s)') as "rate";
+	echo select format(cur_writes-prev_writes,0) as 'writes', format(cur_reads-prev_reads,0) as 'reads', concat('per ',ps,' second(s)') as "rate";
     
 	prev_reads=cur_reads;
 	prev_writes=cur_writes;
