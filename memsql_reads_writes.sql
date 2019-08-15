@@ -12,6 +12,7 @@ cur_writes bigint=0;
 my_name varchar(25);
 my_value bigint;
 d int;
+loop_num bigint = 0;
 
 q QUERY(v_name varchar(25), v_value bigint)= select variable_name, variable_value from information_schema.global_status where variable_name in ('Rows_affected_by_writes','Rows_returned_by_reads');
 
@@ -30,12 +31,20 @@ while true loop
 		end if;
 	end loop;
     
-	echo select format(cur_writes-prev_writes,0) as 'writes', format(cur_reads-prev_reads,0) as 'reads', concat('per ',ps,' second(s)') as "rate";
-    
+	if loop_num != 0 then
+		echo select format(cur_writes-prev_writes,0) as 'writes', format(cur_reads-prev_reads,0) as 'reads', concat('per ',ps,' second(s)') as "rate";
+    	else
+		echo select concat("monitoring ",ps," seconds for first iteration...") as msg;
+	end if;
+	
+	
 	prev_reads=cur_reads;
 	prev_writes=cur_writes;
-	d= sleep(ps);
-    
+	
+	if loop_num != 0 then
+		d= sleep(ps);
+	end if;
+    	loop_num+=1;
 end loop;
 
 
